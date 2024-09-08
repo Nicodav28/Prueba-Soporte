@@ -9,12 +9,12 @@ class Task extends Model
 
     protected $table = 'tasks';
 
-    protected $fillable = ['title', 'description', 'user_id'];
+    protected $fillable = [ 'title', 'description', 'user_id' ];
 
     // Relaciones
     public function user()
     {
-        return $this->belongsTo('App\Models\User', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
 }

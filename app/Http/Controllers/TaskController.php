@@ -2,27 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTaskRequest;
 use App\Models\Task;
-use App\Models\User;
+use App\Services\TaskService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    // Crear tarea
-    public function store(Request $request)
+
+    public function __construct(private TaskService $taskService)
     {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required|max:500',
-            'user' => 'required|max:500',
-        ]);
+    }
 
-        $task = new Task($validated);
-        $user = User::where('email',$validated['user'])->first();
-        $task->user_id = $user->id;
-        $task->save();
 
-        return redirect()->back()->with('success', 'Task created successfully.');
+    public function store(StoreTaskRequest $request): RedirectResponse
+    {
+        return $this->taskService->create($request->validated());
     }
 
     // Actualizar tarea
@@ -30,13 +26,13 @@ class TaskController extends Controller
     {
 
         $validated = $request->validate([
-            'title' => 'required|max:255',
+            'title'       => 'required|max:255',
             'description' => 'required|max:500',
         ]);
 
         $task = Task::find($id);
 
-        if(!$task) {
+        if (!$task) {
             return redirect()->back()->with('error', 'Task not found.');
         }
 
@@ -50,7 +46,7 @@ class TaskController extends Controller
     {
         $task = Task::find($id);
 
-        if(!$task) {
+        if (!$task) {
             return redirect()->back()->with('error', 'Task not found.');
         }
 

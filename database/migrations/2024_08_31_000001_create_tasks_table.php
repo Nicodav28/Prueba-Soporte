@@ -11,14 +11,11 @@ class CreateTasksTable extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id'); // Relación con usuarios
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('title');
             $table->text('description');
             $table->boolean('completed')->default(false); // Estado de la tarea (completada o no)
             $table->timestamps();
-
-            // Índice y clave foránea
-            $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
         });
     }
 
