@@ -8,13 +8,27 @@ use App\Services\Contracts\IStandardContract;
 use App\Traits\ResponseHandler;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
+use \Illuminate\Contracts\Pagination\LengthAwarePaginator;
+
 
 class TaskService implements IStandardContract
 {
     use ResponseHandler;
 
     /**
+     * Get all the tasks with corresponding user
+     *
+     * @param  mixed $paginate
+     * @return LengthAwarePaginator
+     */
+    public function getAll(int $paginate): LengthAwarePaginator
+    {
+        return Task::with('user')->paginate($paginate);
+    }
+
+    /**
      * store a new task
+     * 
      *
      * @param  array $request
      * @return RedirectResponse
@@ -22,7 +36,7 @@ class TaskService implements IStandardContract
     public function create(array $validated): RedirectResponse
     {
         try {
-            $user = User::where('email', $validated['email'])->firstOrFail();
+            $user = User::where('email', $validated['user'])->firstOrFail();
 
             $user->tasks()->create([
                 'title'       => $validated['title'],

@@ -17,13 +17,13 @@ class BaseRequest extends FormRequest
      * Handle a failed validation attempt.
      *
      * @param  \Illuminate\Contracts\Validation\Validator  $validator
-     * @return void
+     * @return mixed
      *
      * @throws \Illuminate\Validation\ValidationException
      */
     protected function failedValidation(Validator $validator)
     {
         // $errors = $validator->errors();
-        throw new HttpResponseException($this->redirectWithError('An error just happened, invalid parameters.', __METHOD__, TaskController::class, 400));
+        return $this->redirectWithError('An error just happened, invalid parameters.', __METHOD__, TaskController::class, 400);
     }
 }

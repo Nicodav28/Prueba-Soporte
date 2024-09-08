@@ -2,7 +2,8 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4">Task List</h1>
         <ul class="list-group mb-4">
-            <li v-for="task in tasks" :key="task.id" class="list-group-item d-flex justify-content-between align-items-center">
+            <li v-for="task in tasks" :key="task.id"
+                class="list-group-item d-flex justify-content-between align-items-center">
                 <div>
                     <h5 class="mb-1">{{ task.title }}</h5>
                     <p class="mb-1">{{ task.description }}</p>
@@ -43,7 +44,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(['tasks']) // Simplificado para mapState
+        ...mapState(['tasks'])
     },
     methods: {
         ...mapActions(['fetchTasks', 'addTask', 'completeTask', 'deleteTask']),
@@ -63,20 +64,19 @@ export default {
             });
         },
         completeTask(taskId) {
-            // Se utiliza la acción 'completeTask'
             this.$store.dispatch('completeTask', taskId).catch(error => {
                 console.error('Error completing task:', error);
             });
         },
         deleteTask(taskId) {
-            // Se utiliza la acción 'deleteTask'
             this.$store.dispatch('deleteTask', taskId).catch(error => {
                 console.error('Error deleting task:', error);
             });
         }
     },
     mounted() {
-
+        // Cargar tareas cuando el componente se monta
+        this.fetchTasks();
     }
 };
 </script>

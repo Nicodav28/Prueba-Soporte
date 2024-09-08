@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Services\TaskService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
 
 class TaskController extends Controller
@@ -12,6 +13,16 @@ class TaskController extends Controller
 
     public function __construct(private TaskService $taskService)
     {
+    }
+
+    /**
+     * Get all the tasks with corresponding user
+     *
+     * @return LengthAwarePaginator
+     */
+    public function index(): LengthAwarePaginator
+    {
+        return $this->taskService->getAll(10);
     }
 
     /**

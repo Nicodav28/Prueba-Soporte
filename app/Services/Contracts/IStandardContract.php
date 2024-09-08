@@ -8,6 +8,8 @@ use Illuminate\Http\RedirectResponse;
 
 interface IStandardContract
 {
+    public function getAll(int $paginate): LengthAwarePaginator;
+
     public function create(array $data): Model|array|RedirectResponse;
 
     public function update(string $id, array $data): Model|array|bool|RedirectResponse;

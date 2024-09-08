@@ -2,12 +2,16 @@
 
 namespace App\Http\Requests;
 
-class StoreTaskRequest extends BaseRequest
+use Illuminate\Foundation\Http\FormRequest;
+
+class CreateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
+     *
+     * @return bool
      */
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
@@ -17,12 +21,11 @@ class StoreTaskRequest extends BaseRequest
      *
      * @return array
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-            'title'       => 'required|max:255',
-            'description' => 'required|max:500',
-            'user'        => 'required|email',
+            'name'  => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
         ];
     }
 }
