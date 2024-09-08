@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c3d88fa6639c9463d85260309c03bb68",
+    "content-hash": "854b3c93ba1ad92bb46d82efcca0f17b",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1825,6 +1825,43 @@
                 }
             ],
             "time": "2024-07-20T21:41:07+00:00"
+        },
+        {
+            "name": "plopster/trace-code-maker",
+            "version": "v1.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Plopster-Software-Development/trace-code-maker-lib.git",
+                "reference": "40561ad7261c38d365a65c722be9ea51a659180e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Plopster-Software-Development/trace-code-maker-lib/zipball/40561ad7261c38d365a65c722be9ea51a659180e",
+                "reference": "40561ad7261c38d365a65c722be9ea51a659180e",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Plopster\\TraceCodeMaker\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "nicodav28",
+                    "email": "nicolas.estevez@plopster.com.co"
+                }
+            ],
+            "description": "A very simple Laravel library designed to create and manage unique trace codes that can be used to monitor, log, and trace errors or responses within a service. The library allows for fetching an existing trace code based on provided parameters or creating a new one if it does not exist.",
+            "support": {
+                "issues": "https://github.com/Plopster-Software-Development/trace-code-maker-lib/issues",
+                "source": "https://github.com/Plopster-Software-Development/trace-code-maker-lib/tree/v1.4.3"
+            },
+            "time": "2024-08-20T23:07:40+00:00"
         },
         {
             "name": "psr/clock",

@@ -2,47 +2,80 @@
 
 namespace App\Services;
 
-use App\Http\Requests\StoreTaskRequest;
 use App\Models\Task;
 use App\Models\User;
 use App\Services\Contracts\IStandardContract;
+use App\Traits\ResponseHandler;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class TaskService implements IStandardContract
 {
+    use ResponseHandler;
+
     /**
-     * Crear tarea
+     * store a new task
      *
-     * @param  StoreTaskRequest $request
+     * @param  array $request
      * @return RedirectResponse
      */
-    public function create(array $request): RedirectResponse
+    public function create(array $validated): RedirectResponse
     {
-        $validated = $request->validated();
+        try {
+            $user = User::where('email', $validated['email'])->firstOrFail();
 
-        $user = User::where('email', $validated['email'])->first();
+            $user->tasks()->create([
+                'title'       => $validated['title'],
+                'description' => $validated['description'],
+            ]);
 
-        if (!$user) {
-            return redirect()->back()->with('error', 'Task could not be created, user not found.');
+            return $this->redirectWithSuccess('Task created successfully.', __METHOD__, self::class);
+        } catch (ModelNotFoundException $e) {
+            return $this->redirectWithError('Task could not be created, user not found.', __METHOD__, self::class);
+        } catch (\Exception $e) {
+            return $this->redirectWithError('Ups!, an error just happened, please notify this issue to the customer support team.', __METHOD__, self::class);
         }
-
-        $user->tasks()->create([
-            'title'       => $validated['title'],
-            'description' => $validated['description'],
-        ]);
-
-        return redirect()->back()->with('success', 'Task created successfully.');
     }
 
-    public function update(string $id, array $data): RedirectResponse
+    /**
+     * update an existing task
+     *
+     * @param string|int $id
+     * @param array $data
+     * @return RedirectResponse
+     */
+    public function update(string|int $id, array $data): RedirectResponse
     {
-        return redirect()->back()->with('success', 'Task created successfully.');
+        try {
+            $task = Task::findOrFail($id);
+
+            $task->update($data);
+
+            return $this->redirectWithSuccess('Task updated successfully.', __METHOD__, self::class, 201);
+        } catch (ModelNotFoundException $e) {
+            return $this->redirectWithError('Task not found.', __METHOD__, self::class);
+        } catch (\Exception $e) {
+            return $this->redirectWithError('Ups!, an error just happened, please notify this issue to the customer support team.', __METHOD__, self::class);
+        }
     }
 
+    /**
+     * destroy an existing task
+     *
+     * @param string|int $id
+     * @return RedirectResponse
+     */
     public function delete(int|string $id): RedirectResponse
     {
-        return redirect()->back()->with('success', 'Task created successfully.');
+        try {
+            Task::findOrFail($id)->delete();
+
+            return $this->redirectWithSuccess('Task deleted successfully.', __METHOD__, self::class);
+        } catch (ModelNotFoundException $e) {
+            return $this->redirectWithError('Task not found.', __METHOD__, self::class);
+        } catch (\Exception $e) {
+            return $this->redirectWithError('Ups!, an error just happened, please notify this issue to the customer support team.', __METHOD__, self::class);
+        }
     }
 
 }
