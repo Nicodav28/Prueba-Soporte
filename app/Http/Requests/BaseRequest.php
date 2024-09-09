@@ -23,7 +23,8 @@ class BaseRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator)
     {
-        // $errors = $validator->errors();
-        return $this->redirectWithError('An error just happened, invalid parameters.', __METHOD__, TaskController::class, 400);
+        $errors = $validator->errors();
+
+        throw new HttpResponseException($this->errorResponse(__METHOD__, self::class, 'An error just happened, invalid parameters.', 400, 'Invalid Request', $errors));
     }
 }

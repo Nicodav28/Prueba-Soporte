@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Services\TaskService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
 class TaskController extends Controller
@@ -18,9 +19,9 @@ class TaskController extends Controller
     /**
      * Get all the tasks with corresponding user
      *
-     * @return LengthAwarePaginator
+     * @return JsonResponse
      */
-    public function index(): LengthAwarePaginator
+    public function index(): JsonResponse
     {
         return $this->taskService->getAll(10);
     }
@@ -29,9 +30,9 @@ class TaskController extends Controller
      * store a new task
      *
      * @param  StoreTaskRequest $request
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function store(StoreTaskRequest $request): RedirectResponse
+    public function store(StoreTaskRequest $request): JsonResponse
     {
         return $this->taskService->create($request->validated());
     }
@@ -41,9 +42,9 @@ class TaskController extends Controller
      *
      * @param  int|string $id
      * @param  UpdateTaskRequest $request
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function update(int|string $id, UpdateTaskRequest $request): RedirectResponse
+    public function update(int|string $id, UpdateTaskRequest $request): JsonResponse
     {
         return $this->taskService->update($id, $request->validated());
     }
@@ -52,9 +53,9 @@ class TaskController extends Controller
      * destroy an existing task
      *
      * @param  int|string $id
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function destroy(int|string $id): RedirectResponse
+    public function destroy(int|string $id): JsonResponse
     {
         return $this->taskService->delete($id);
     }

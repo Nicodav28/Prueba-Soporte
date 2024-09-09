@@ -4,15 +4,15 @@ namespace App\Services\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
 use \Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 
 interface IStandardContract
 {
-    public function getAll(int $paginate): LengthAwarePaginator;
+    public function getAll(int $paginate): LengthAwarePaginator|JsonResponse;
 
-    public function create(array $data): Model|array|RedirectResponse;
+    public function create(array $data): Model|array|JsonResponse;
 
-    public function update(string $id, array $data): Model|array|bool|RedirectResponse;
+    public function update(string $id, array $data): Model|array|bool|JsonResponse;
 
-    public function delete(int|string $id): bool|array|Model|RedirectResponse;
+    public function delete(int|string $id): bool|array|Model|JsonResponse;
 }

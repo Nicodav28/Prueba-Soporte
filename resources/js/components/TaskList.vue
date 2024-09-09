@@ -75,7 +75,6 @@ export default {
         }
     },
     mounted() {
-        // Cargar tareas cuando el componente se monta
         this.fetchTasks();
     }
 };

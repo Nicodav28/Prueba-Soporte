@@ -3,21 +3,71 @@
 namespace App\Traits;
 
 use App\Facades\TraceCodeMaker;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 
 trait ResponseHandler
 {
-    private function redirectWithSuccess(string $message, string $methodName, string $className, ?int $httpCode = null, ?string $codeDescription = null): RedirectResponse
-    {
-        $traceCode = TraceCodeMaker::fetchOrCreateTraceCode('TEST', $httpCode ?? 200, $methodName, $className, $codeDescription ?? $message);
+    /**
+     * Succesfull base response
+     *
+     * @param mixed $data
+     * @param string $message
+     * @param int $statusCode
+     * @return JsonResponse
+     */
+    protected function successResponse(
+        string $methodName,
+        string $className,
+        ?string $message = 'Successful Response',
+        ?int $httpCode = 200,
+        mixed $data = null,
+        ?string $codeDescription = null,
+    ): JsonResponse {
 
-        return redirect()->back()->with('success', $message . ' - ' . $traceCode['traceCode'] ?? '');
+        $traceCode = TraceCodeMaker::fetchOrCreateTraceCode('TEST', $httpCode, $methodName, $className, $codeDescription);
+
+        $finalResponse = [
+            'resultCode'    => 'SUCCESS',
+            'resultMessage' => $message,
+            'traceCode'     => $traceCode['traceCode'] ?? 'Could not get a trace code.',
+            'result'        => $data,
+        ];
+
+        $response = response()->json($finalResponse, $httpCode);
+        $response->header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+
+        return $response;
     }
 
-    private function redirectWithError(string $message, string $methodName, string $className, ?int $httpCode = null, ?string $codeDescription = null): RedirectResponse
-    {
-        $traceCode = TraceCodeMaker::fetchOrCreateTraceCode('TEST', $httpCode ?? 500, $methodName, $className, $codeDescription ?? $message);
+    /**
+     * Error base response
+     *
+     * @return JsonResponse
+     */
+    protected function errorResponse(
+        string $methodName,
+        string $className,
+        ?string $message = 'An error occurred while processing the request.',
+        ?int $httpCode = 500,
+        ?string $codeDescription = null,
+        mixed $result = [],
+    ): JsonResponse {
 
-        return redirect()->back()->with('error', $message . ' - ' . $traceCode['traceCode'] ?? '');
+        $traceCode = TraceCodeMaker::fetchOrCreateTraceCode('TEST', $httpCode, $methodName, $className, $codeDescription);
+
+        $finalResponse = [
+            'resultCode'    => 'ERROR',
+            'resultMessage' => $message,
+            'traceCode'     => $traceCode['traceCode'] ?? 'Could not get a trace code.',
+        ];
+
+        if (isset($result) && !empty($result)) {
+            $finalResponse['result'] = $result;
+        }
+
+        $response = response()->json($finalResponse, $httpCode);
+        $response->header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+
+        return $response;
     }
 }
