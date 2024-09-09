@@ -21,12 +21,19 @@ class TaskService implements IStandardContract
      * @param  mixed $paginate
      * @return JsonResponse
      */
-    public function getAll(int $paginate): JsonResponse
+    public function getAll(int $paginate, ?string $filter): JsonResponse
     {
-        $tasks = Task::with('user')->paginate($paginate);
+        $query = Task::with('user');
+
+        if ($filter === 'completed') {
+            $query->where('completed', true);
+        } elseif ($filter === 'pending') {
+            $query->where('completed', false);
+        }
+
+        $tasks = $query->paginate($paginate);
 
         return $this->successResponse(__METHOD__, self::class, 'Tasks indexed successfully.', 200, $tasks);
-
     }
 
     /**
@@ -41,12 +48,13 @@ class TaskService implements IStandardContract
         try {
             $user = User::where('email', $validated['user'])->firstOrFail();
 
-            $user->tasks()->create([
+            $newTask = $user->tasks()->create([
                 'title'       => $validated['title'],
                 'description' => $validated['description'],
             ]);
 
-            return $this->successResponse(__METHOD__, self::class, 'Task created successfully.');
+            $newTask->load('user');
+            return $this->successResponse(__METHOD__, self::class, 'Task created successfully.', 200, $newTask);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse(__METHOD__, self::class, 'Task could not be created, user not found.', 404);
         } catch (\Exception $e) {
@@ -64,11 +72,15 @@ class TaskService implements IStandardContract
     public function update(string|int $id, array $data): JsonResponse
     {
         try {
-            $task = Task::findOrFail($id);
+            $task = Task::with('user')->findOrFail($id);
+
+            if (array_key_exists('completed', $data) && $task->completed) {
+                return $this->successResponse(__METHOD__, self::class, 'Task already completed.');
+            }
 
             $task->update($data);
 
-            return $this->successResponse(__METHOD__, self::class, 'Task updated successfully.');
+            return $this->successResponse(__METHOD__, self::class, 'Task updated successfully.', 200, $task);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse(__METHOD__, self::class, 'Task not found.', 404);
         } catch (\Exception $e) {

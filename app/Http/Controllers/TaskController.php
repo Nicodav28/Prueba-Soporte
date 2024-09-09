@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Services\TaskService;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 
 class TaskController extends Controller
 {
@@ -21,9 +20,11 @@ class TaskController extends Controller
      *
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return $this->taskService->getAll(10);
+        $filter = $request->query('filter');
+
+        return $this->taskService->getAll(10, $filter);
     }
 
     /**
@@ -58,5 +59,16 @@ class TaskController extends Controller
     public function destroy(int|string $id): JsonResponse
     {
         return $this->taskService->delete($id);
+    }
+
+    /**
+     * completeTask
+     *
+     * @param  mixed $id
+     * @return JsonResponse
+     */
+    public function completeTask(int|string $id): JsonResponse
+    {
+        return $this->taskService->update($id, [ 'completed' => true ]);
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 
 interface IStandardContract
 {
-    public function getAll(int $paginate): LengthAwarePaginator|JsonResponse;
+    public function getAll(int $paginate, ?string $filter): LengthAwarePaginator|JsonResponse;
 
     public function create(array $data): Model|array|JsonResponse;
 
