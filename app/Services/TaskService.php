@@ -54,6 +54,7 @@ class TaskService implements IStandardContract
             ]);
 
             $newTask->load('user');
+
             return $this->successResponse(__METHOD__, self::class, 'Task created successfully.', 200, $newTask);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse(__METHOD__, self::class, 'Task could not be created, user not found.', 404);

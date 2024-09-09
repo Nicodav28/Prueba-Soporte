@@ -90,7 +90,6 @@ export default new Vuex.Store({
             axios.post(`/tasks-complete/${taskId}`)
                 .then(response => {
                     if (response.data.resultCode === 'SUCCESS') {
-                        console.log(response.data);
                         commit('COMPLETE_TASK', { completedTask: response.data.result, filter: filter });
                     } else {
                         console.error(response.data.resultMessage);

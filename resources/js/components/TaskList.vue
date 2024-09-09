@@ -103,7 +103,6 @@ export default {
         },
         completeTask(taskId) {
             this.$store.dispatch('completeTask', {taskId: taskId, filter: this.selectedFilter}).then((response)=>{
-                console.log('Task completed:', response);
             }).catch(error => {
                 console.error('Error completing task:', error);
             });
